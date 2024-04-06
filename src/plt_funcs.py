@@ -39,7 +39,7 @@ def plot_constellation_peaks(data):
     返回值：
     无
     """
-    num_peaks = 410
+    #num_peaks 
     # num_points = len(data) #输入数据的长度
     # num_points = 12800
     colors = plt.cm.tab20(np.linspace(0, 1, 52))  # 生成不同颜色
@@ -49,7 +49,7 @@ def plot_constellation_peaks(data):
     
     # for i in range(num_peaks):
     for i in range(0,52,1):
-        indices = np.arange(i, 832, 52)
+        indices = np.arange(i, 4*52, 52)
         print('第',i,'个数据子载波',indices)
         x = np.real(data[indices])
         y = np.imag(data[indices])

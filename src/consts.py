@@ -11,33 +11,24 @@ N = 64
 SAMPLE_FACTOR = 4
 FREQ_SHIFT = 128e6
 # file name
-ascii_tx_file = "D:/work/CA/simulation/dats/ascii_tx_input.txt"
-tx_output_sig_file = "D:/work/CA/simulation/dats/tx_output.txt"
-tx_output_sig_I_file = "D:/work/CA/simulation/dats/tx_Im_output.txt"
-tx_output_sig_Q_file = "D:/work/CA/simulation/dats/tx_Re_output.txt"
-channel_output_sig_file = "D:/work/CA/simulation/dats/channel_output.txt"
-rx_output_ascii_file = "D:/work/CA/simulation/dats/rx_output_ascii.txt"
+ascii_tx_file = "../dats/ascii_tx_input.txt"
+tx_output_sig_file = "../dats/rtl_input/tx_output.txt"
+tx_output_sig_I_file = "../dats/rtl_input/tx_Im_output.txt"
+tx_output_sig_Q_file = "../dats/rtl_input/tx_Re_output.txt"
+channel_output_sig_file = "../dats/channel_output.txt"
+rx_output_ascii_file = "../dats/rx_output_ascii.txt"
 
-tx_4096_samp = "D:/work/CA/simulation/dats/tx_4096_samp.txt"
-tx_ofdm_payload_with_cp_file = "D:/work/CA/simulation/dats/ofdm_payload_with_cp.txt"
+tx_4096_samp = "../dats/tx_4096_samp.txt"
+tx_ofdm_payload_with_cp_file = "../dats/ofdm_payload_with_cp.txt"
 
 # rtl test input
-tx_output_rtl_test_file = "D:/work/CA/simulation/dats/rtl_test_input.txt"
-tx_output_rtl_test_256bit_file = "D:/work/CA/simulation/dats/rtl_test_input_256bit.txt"
-tx_rom_input_file = "D:/work/fpga/Thz/CA/prjs/badjerry_rf_v1/coe_file/tx_rom_input.coe"
+tx_output_rtl_test_file = "../dats/rtl_input/rtl_test_input.txt"
+tx_output_rtl_test_256bit_file = "../dats/rtl_input/rtl_test_input_256bit.txt"
 
 # rtl test res
-test_res_Q = "D:/work/CA/simulation/2024_2_26/test_output_Q_file.txt"
-test_res_I = "D:/work/CA/simulation/2024_2_26/test_output_I_file.txt"
+test_res_Q = "../dats/rtl_output/test_output_Q_file.txt"
+test_res_I = "../dats/rtl_output/test_output_I_file.txt"
 
-test_res_Q_40cm = "D:/work/CA/simulation/2024_3_26/40cm/test_output_Q_file.txt"
-test_res_I_40cm = "D:/work/CA/simulation/2024_3_26/40cm/test_output_I_file.txt"
-
-test_res_Q_80cm = "D:/work/CA/simulation/2024_3_26/80cm/test_output_Q_file.txt"
-test_res_I_80cm = "D:/work/CA/simulation/2024_3_26/80cm/test_output_I_file.txt"
-
-
-test_res_complex = "D:/work/CA/simulation/2024_2_26/test_output_complex_file.txt"
 
 
 # QAM16 mapping
@@ -195,7 +186,7 @@ ind_2 = np.arange(start=33, stop=59)
 #ind_1 = np.arange(start=20, stop=124)
 #ind_2 = np.arange(start=131, stop=235)
 OFDM_PAYLOAD_INDEX = np.concatenate((ind_1,ind_2))
-PILOT_GAIN = 0
+PILOT_GAIN = 32767
 
 #OFDM_PILOT_INDEX = np.array([348,749,1150,1551,1952,2143,2544,2945,3346,3747])
 #OFDM_PILOT_INDEX = np.array([20,46,72,98,124,131,157,183,209,235])

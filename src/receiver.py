@@ -359,7 +359,7 @@ def Receiver(channel_output_file, rx_output_file):
     for no_frame in range(num_frame):
         # get index
         LTF_seq_start_index = pks[0][no_frame*2+1] - 95
-        if(LTF_seq_start_index + consts.FRAME_LEN + 1 > len(rx_din_sig)):
+        if(LTF_seq_start_index + consts.FRAME_LEN - 32  > len(rx_din_sig)):
             break
         print("LTF_seq_start_index = ",LTF_seq_start_index)
         training_seq_start_index = pks[0][no_frame*2+1] + 32 + 1

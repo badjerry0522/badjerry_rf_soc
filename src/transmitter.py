@@ -185,17 +185,17 @@ def Transmitter(ascii_file, output_file):
     #qam_mod_res = QAM16_mod_ascii_file(ascii_file)
 
     #16QAM random array
-    qam_mod_res = np.zeros(consts.NSYM * consts.N_FRAME,dtype = np.complex64)
-    rand_qam_index = np.random.randint(0, 4, size=consts.NSYM* consts.N_FRAME)
-    for i in range(int((consts.NSYM * consts.N_FRAME)/2)):
-        qam_mod_res[i] = qam4_mapping((rand_qam_index[i] ^ np.random.randint(0,4)))
+    #qam_mod_res = np.zeros(consts.NSYM * consts.N_FRAME,dtype = np.complex64)
+    #rand_qam_index = np.random.randint(0, 4, size=consts.NSYM* consts.N_FRAME)
+    #for i in range(int((consts.NSYM * consts.N_FRAME)/2)):
+    #    qam_mod_res[i] = qam4_mapping((rand_qam_index[i] ^ np.random.randint(0,4)))
 
-    for i in range(int((consts.NSYM * consts.N_FRAME)/2)):
-        qam_mod_res[i+int((consts.NSYM * consts.N_FRAME)/2)] = -1*qam_mod_res[i]
+    #for i in range(int((consts.NSYM * consts.N_FRAME)/2)):
+    #    qam_mod_res[i+int((consts.NSYM * consts.N_FRAME)/2)] = -1*qam_mod_res[i]
         
     #df.save_array_to_file("D:/work/CA/simulation/dats/qam_mod_res.txt",qam_mod_res)
-    #qam_mod_res = np.zeros((consts.NSYM * consts.N_FRAME))
-    #qam_mod_res = np.loadtxt("D:/work/CA/simulation/dats/qam_mod_res.txt",dtype = np.complex64)
+    qam_mod_res = np.zeros((consts.NSYM * consts.N_FRAME))
+    qam_mod_res = np.loadtxt("D:/work/CA/simulation/dats/qam_mod_res.txt",dtype = np.complex64)
     # aligned qam signal to complete frame
     n_frames, qam_mod_aligned = align_qam_symb(qam_mod_res)
 

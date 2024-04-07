@@ -28,6 +28,7 @@ tx_output_rtl_test_256bit_file = "../dats/rtl_input/rtl_test_input_256bit.txt"
 # rtl test res
 test_res_Q = "../dats/rtl_output/test_output_Q_file.txt"
 test_res_I = "../dats/rtl_output/test_output_I_file.txt"
+test_res_complex = "../dats/rtl_output/test_res_complex.txt"
 
 
 
@@ -125,9 +126,9 @@ LTFseq_inverted_1 = np.array([0,0,\
                             1,1,1,-1,1,-1,1,1,-1,\
                             -1,1,1,0,0,0,0,0,0
                             ])
-plt.figure(1)
-plt.plot(signal.convolve(in1 = LTFseq, in2 = LTFseq_inverted_1,mode = "same"))
-plt.show()
+#plt.figure(1)
+#plt.plot(signal.convolve(in1 = LTFseq, in2 = LTFseq_inverted_1,mode = "same"))
+#plt.show()
 print(len(LTFseq_inverted))
 #LTF_symb1_real = np.array([26.79578968, -39.04881868, 58.96075908, -212.46020464, 350.58806485, -592.28104507, 17225.29003116, 15309.18920132, -15074.14591433, -18052.22007339, 18225.05238682, 14469.22154675, -14346.87680192, 14337.73294351, -14467.22323818, 14665.57709577, 17864.98541264, 15322.08360949, 17051.91922041, 16286.39341782, 16017.85227214, -15615.48316436, -17653.92616348, 17947.7538991, 14704.38555181, -14594.2817524, 14608.62310479, -14856.00083193, 15105.17036755, 17321.20609454, 15940.8532192, 16363.93783868, 661.44993441, 15232.29783694, -14686.67136296, -18619.37255373, 19081.59541463, 13424.90014646, -13244.29111047, 13104.36066531, -13074.26458088, 13061.39843108, -13141.06727675, -19644.94313876, -13262.85526004, -19490.42488742, -13412.50835127, 13355.33998127, 19434.42774771, -19440.65966137, -13407.33949831, 13434.61672887, -13498.62309154, 13640.24132622, -13767.40345033, 14026.12636165, 18575.04782396, 14586.84944373, 17874.64401532, -1119.45966227, 812.17538024, -559.83544502, 333.61115395, -128.80925472])
 
@@ -193,7 +194,7 @@ PILOT_GAIN = 32767
 OFDM_PILOT_INDEX = np.array([0,1,2,3,4,5,32,59,60,61,62,63])
 OFDM_DATA_BLOCK_NUM = 8
 OFDM_DATA_INDEX = np.setdiff1d(OFDM_PAYLOAD_INDEX, OFDM_PILOT_INDEX)
-print("DARA INDEX = ",OFDM_DATA_INDEX)
+print("DATA INDEX = ",OFDM_DATA_INDEX)
 
 
 pilot_seq_real = np.array([4.242,4.242,4.242,4.242,\
@@ -215,7 +216,7 @@ SNR = 30
 
 # time sync 
 #PEAK = 3e9
-PEAK = 2e10
+PEAK = 1.2e18
 
 
 # distance Estimation

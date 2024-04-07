@@ -275,7 +275,7 @@ def Receiver(channel_output_file, rx_output_file):
 
 
     # test: 120000 - 160000
-    #rx_din_sig = (rx_din_sig[20000:55000])
+    rx_din_sig = (rx_din_sig[0:8000])
     pf.plot_all("sig after downsample real",rx_din_sig.real,512e6)
     pf.plot_all("sig after downsample imag",rx_din_sig.imag,512e6)
     
@@ -433,7 +433,7 @@ def Receiver(channel_output_file, rx_output_file):
             # FFT
             rx_demod = ofdm_demod(payload_before_fft[k:(k + consts.N + consts.CP_LEN)],consts.N,consts.CP_LEN)
             # channel equ using training seq
-            # rx_demod[consts.OFDM_PAYLOAD_INDEX] = channel_equ(rx_demod[consts.OFDM_PAYLOAD_INDEX],channel_est_res)
+            rx_demod[consts.OFDM_PAYLOAD_INDEX] = channel_equ(rx_demod[consts.OFDM_PAYLOAD_INDEX],channel_est_res)
 
             # channel est using pilot 
             #channel_est_pilot_res = channel_est_pilot(rx_demod)

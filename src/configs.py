@@ -10,6 +10,8 @@ class ofdm_config:
     N = None
     CP_LEN = None
 
+    SAMPLE_RATE = 512e6
+
 # FRAME HEAD
     LLTF_GAIN = 30000
     LTF_SEQ_LEN = 64
@@ -56,7 +58,7 @@ class ofdm_config:
     N_PILOT_SC = None
     N_GUARD_SC = None
     N_SOLID_SC = None
-    N_SYM = None
+    N_DATA_QAM_SYMB = None
     PAYLOAD_LEN = None
     FRAME_LEN = None
     OFDM_DATA_INDEX = None
@@ -80,13 +82,14 @@ class ofdm_config:
     SNR = 30
 
 
-    TX_INPUT_QAM_FILE = "../dats/simu/tx_input_qam.txt"
-    TX_OUTPUT_QAM_NO_PILOT_FILE = "../dats/rtl_input/tx_output_qam_no_pilot.txt"
-    TX_OUTPUT_QAM_PILOT_FILE = "../dats/rtl_input/tx_output_qam_pilot.txt"
-    TX_OUTPUT_FILE = "../dats/rtl_test_input.txt"
-    CHANNEL_OUTPUT_FILE = "../dats/simu/channel_output.txt"
-    RTL_OUTPUT_I_FILE = "../dats/rtl_output/rtl_output_I.txt"
-    RTL_OUTPUT_Q_FILE = "../dats/rtl_output/rtl_output_Q.txt"
+    TX_INPUT_QAM_FILE = "./dats/simu/tx_input_qam.txt"
+    TX_OUTPUT_QAM_NO_PILOT_FILE = "./dats/rtl_input/tx_output_qam_no_pilot.txt"
+    TX_OUTPUT_QAM_PILOT_FILE = "./dats/rtl_input/tx_output_qam_pilot.txt"
+    TX_OUTPUT_SINGLE_FRAME_FILE = "./dats/single_frame.txt"
+    TX_OUTPUT_FILE = "./dats/rtl_test_input.txt"
+    CHANNEL_OUTPUT_FILE = "./dats/simu/channel_output.txt"
+    RTL_OUTPUT_I_FILE = "./dats/rtl_output/rtl_output_I.txt"
+    RTL_OUTPUT_Q_FILE = "./dats/rtl_output/rtl_output_Q.txt"
 
     
 
@@ -121,7 +124,7 @@ class ofdm_config:
         if(self.N == 64):
             # N 64 training seq
             self.N_TRAINING_SEQ =2 
-            self.TRAINING_SEQ_GAIN = 2*(self.CP_LEN + self.N)
+            #self.TRAINING_SEQ_GAIN = 2*(self.CP_LEN + self.N)
             self.train_seq = self.LTFseq
             self.train_seq_ifft = np.fft.ifft((self.train_seq * self.TRAINING_SEQ_GAIN),self.N)
             self.train_seq_cp = self.train_seq_ifft[self.N-self.CP_LEN:self.N]
@@ -245,7 +248,7 @@ class ofdm_config:
             return
         self.N_SOLID_SC = self.N_DATA_SC + self.N_PILOT_SC
         self.pilot_seq = np.ones(self.N_PILOT_SC) * self.PILOT_GAIN
-        self.N_SYM = self.N_OFDM * self.N_DATA_SC
+        self.N_DATA_QAM_SYMB = self.N_OFDM * self.N_DATA_SC
         self.PAYLOAD_LEN = self.N_OFDM * (self.CP_LEN + self.N)
         self.FRAME_LEN = (self.CP_LEN + self.N ) * (self.N_OFDM + self.N_TRAINING_SEQ) + self.LTF_WITH_CP_LEN
 
@@ -271,43 +274,43 @@ class ofdm_config:
         if args.TX_INPUT_QAM_FILE is not None:
             self.TX_INPUT_QAM_FILE = args.TX_INPUT_QAM_FILE
         else:
-            self.TX_INPUT_QAM_FILE = "../dats/simu/tx_input_qam.txt"  # default value
+            self.TX_INPUT_QAM_FILE = "./dats/simu/tx_input_qam.txt"  # default value
 
         # TX_OUTPUT_QAM_NO_PILOT_FILE
         if args.TX_OUTPUT_QAM_NO_PILOT_FILE is not None:
             self.TX_OUTPUT_QAM_NO_PILOT_FILE = args.TX_OUTPUT_QAM_NO_PILOT_FILE
         else:
-            self.TX_OUTPUT_QAM_NO_PILOT_FILE = "../dats/rtl_input/tx_output_qam_no_pilot.txt"  # default value
+            self.TX_OUTPUT_QAM_NO_PILOT_FILE = "./dats/rtl_input/tx_output_qam_no_pilot.txt"  # default value
 
         # TX_OUTPUT_QAM_PILOT_FILE
         if args.TX_OUTPUT_QAM_PILOT_FILE is not None:
             self.TX_OUTPUT_QAM_PILOT_FILE = args.TX_OUTPUT_QAM_PILOT_FILE
         else:
-            self.TX_OUTPUT_QAM_PILOT_FILE = "../dats/rtl_input/tx_output_qam_pilot.txt"  # default value
+            self.TX_OUTPUT_QAM_PILOT_FILE = "./dats/rtl_input/tx_output_qam_pilot.txt"  # default value
 
         # TX_OUTPUT_FILE
         if args.TX_OUTPUT_FILE is not None:
             self.TX_OUTPUT_FILE = args.TX_OUTPUT_FILE
         else:
-            self.TX_OUTPUT_FILE = "../dats/rtl_test_input.txt"  # default value
+            self.TX_OUTPUT_FILE = "./dats/rtl_test_input.txt"  # default value
 
         # CHANNEL_OUTPUT_FILE
         if args.CHANNEL_OUTPUT_FILE is not None:
             self.CHANNEL_OUTPUT_FILE = args.CHANNEL_OUTPUT_FILE
         else:
-            self.CHANNEL_OUTPUT_FILE = "../dats/simu/channel_output.txt"  # default value
+            self.CHANNEL_OUTPUT_FILE = "./dats/simu/channel_output.txt"  # default value
 
         # RTL_OUTPUT_I_FILE
         if args.RTL_OUTPUT_I_FILE is not None:
             self.RTL_OUTPUT_I_FILE = args.RTL_OUTPUT_I_FILE
         else:
-            self.RTL_OUTPUT_I_FILE = "../dats/rtl_output/rtl_output_I.txt"  # default value
+            self.RTL_OUTPUT_I_FILE = "./dats/rtl_output/rtl_output_I.txt"  # default value
 
         # RTL_OUTPUT_Q_FILE
         if args.RTL_OUTPUT_Q_FILE is not None:
             self.RTL_OUTPUT_Q_FILE = args.RTL_OUTPUT_Q_FILE
         else:
-            self.RTL_OUTPUT_Q_FILE = "../dats/rtl_output/rtl_output_Q.txt"  # default value
+            self.RTL_OUTPUT_Q_FILE = "./dats/rtl_output/rtl_output_Q.txt"  # default value
 
         self.init_ok = 1
         return
@@ -332,7 +335,7 @@ class ofdm_config:
         print("N_PILOT_SC:", self.N_PILOT_SC)
         print("N_GUARD_SC:", self.N_GUARD_SC)
         print("N_SOLID_SC:", self.N_SOLID_SC)
-        print("N_SYM:", self.N_SYM)
+        print("N_DATA_QAM_SYMB:", self.N_DATA_QAM_SYMB)
         print("PAYLOAD_LEN:", self.PAYLOAD_LEN)
         print("FRAME_LEN:", self.FRAME_LEN)
         print("OFDM_DATA_INDEX:", self.OFDM_DATA_INDEX)

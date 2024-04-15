@@ -8,9 +8,13 @@ from rfsoc_book.helper_functions import symbol_gen, psd, \
 frequency_plot, scatterplot, calculate_evm, awgn
 import data_func as df
 def plot_dat(sig_name,sig):
-    plt.figure(sig_name)
-    plt.title(sig_name)
-    plt.plot(sig)
+    plt.figure(sig_name + " real")
+    plt.title(sig_name+ " real")
+    plt.plot(sig.real)
+
+    plt.figure(sig_name + "imag")
+    plt.title(sig_name+ " imag")
+    plt.plot(sig.imag)
     return
 
 def plot_spectrum(sig_name,sig,sample_rate):

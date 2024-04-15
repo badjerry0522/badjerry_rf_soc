@@ -216,7 +216,7 @@ SNR = 30
 
 # time sync 
 #PEAK = 3e9
-PEAK = 1.2e18
+PEAK = 5e18
 
 
 # distance Estimation

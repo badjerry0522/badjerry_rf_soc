@@ -1,4 +1,7 @@
-# cmd_args
+# configs.py
+
+## cmd_args
+
 用于处理、存储命令行输入参数。
 
 | 参数名                           | 是否必须 | 传递方式                            | 功能                                         | 使用示例                                                     |
@@ -22,7 +25,76 @@
 
 
 
+# Transmitter.py
 
+## TX
+
+### 成员：
+
+```python
+ofdm_cfg:configs.ofdm_config = None
+#gen_rand_qam_seq
+RAND_SEED = 123
+rand_qam_seq_len = None
+rand_qam_seq_file = None
+rand_qam_seq = None
+
+#TX_qam_seq
+guard_seq = None
+pilot_seq = None
+tx_qam_seq = None
+tx_qam_seq_len = None
+tx_qam_seq_file = None
+    
+#ofdm_seq
+ofdm_symb_seq = None
+
+#tx_frame_seq
+tx_frame_seq = None
+tx_frame_seq_len = None
+tx_single_frame_seq = None
+tx_single_frame_seq_file = None
+tx_frame_seq_file = None
+```
+
+
+
+### 方法：
+
+```python
+def __init__(self,args_cfg):
+    '''
+    初始化，输入参数类型为cmd_args类。会生成pilot_seq 和 guard_seq
+    '''
+def gen_rand_qam_seq(self):
+    '''
+    生成随机的qam符号序列，其长度为 N_DATA_QAM_SYMB = N_OFDM * N_DATA
+    '''
+def gen_tx_qam_seq(self):
+    '''
+    将随机qam符号序列与导频和保护间隔组合
+    '''
+def ofdm_mod(self):
+    '''
+    ofdm调制，输出长度为 N*N_OFDM
+    '''
+def frame_assemble(self):
+    '''
+    帧组装与重复
+    '''
+def plt_single_frame(self):
+    '''
+    画图，一帧
+	'''
+def plt_frames(self):
+    '''
+    画图，多帧
+    '''
+def tx_run(self):
+    '''
+    tx类的调用接口，当EXE_MODE为DEMODE时，直接返回；当EXE_MODE为其他时，执行生成和调制
+    '''
+```
 
 
 

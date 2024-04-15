@@ -10,10 +10,169 @@ from rfsoc_book.helper_functions import symbol_gen, psd, \
 frequency_plot, scatterplot, calculate_evm, awgn
 import data_func as df
 import plt_funcs as pf
+import configs
+
+def qam_mapping(qam_map,value):
+    return qam_map[value]
+
+def add_cp(ofdm_symb,N,cp_len):
+    
+    #Extract CP
+    cp = ofdm_symb[N-cp_len:N:1]
+    
+    # Concatenate CP and symbol 
+    ofdm_symb_cp = np.concatenate((cp,ofdm_symb))
+    
+    return ofdm_symb_cp
+
+# qam_seq must be N aligned
+def ofdm_mod(qam_seq,n_ofdm,N,CP_LEN):
+    n_ofdm_symb_index = None
+    
+    ofdm_res = np.zeros((N+CP_LEN) * n_ofdm,dtype = np.complex64)
+    ofdm_res_index = None
+    for i in range (n_ofdm):
+        n_ofdm_symb_index = np.arange(start = i*N, stop = (i+1)*N)
+        ofdm_res_index = np.arange(start = i*(N+CP_LEN),stop = (i+1)*(N+CP_LEN))
+
+        ifft_res = np.fft.ifft(qam_seq[n_ofdm_symb_index])
+        ofdm_res[ofdm_res_index] = add_cp(ifft_res,N,CP_LEN)
+
+    return ofdm_res
+
+class tx:
+    ofdm_cfg:configs.ofdm_config = None
+    #gen_rand_qam_seq
+    RAND_SEED = 123
+    rand_qam_seq_len = None
+    rand_qam_seq_file = None
+    rand_qam_seq = None
+
+    #TX_qam_seq
+    guard_seq = None
+    pilot_seq = None
+    tx_qam_seq = None
+    tx_qam_seq_len = None
+    tx_qam_seq_file = None
+    
+    #ofdm_seq
+    ofdm_symb_seq = None
+
+    #tx_frame_seq
+    tx_frame_seq = None
+    tx_frame_seq_len = None
+    tx_single_frame_seq = None
+    tx_single_frame_seq_file = None
+    tx_frame_seq_file = None
+
+    def __init__(self,args_cfg):
+        self.ofdm_cfg = args_cfg
+        if(self.ofdm_cfg.PILOT_MODE == "NO_PILOT"):
+            self.guard_seq = None
+            self.pilot_seq = None
+        elif(self.ofdm_cfg.PILOT_MODE == "ZEROS"):
+            self.guard_seq = np.zeros(self.ofdm_cfg.N_GUARD_SC,dtype = np.complex64)
+            self.pilot_seq = None
+        elif(self.ofdm_cfg.PILOT_MODE == "PILODE_MODE_!"):
+            print("IN TX, PILOT_MODE_1 NOT USED YET!!!")
+            self.guard_seq = None
+            self.pilot_seq = None
+
+    
+
+    def gen_rand_qam_seq(self):
+        self.rand_qam_seq_len = self.ofdm_cfg.N_DATA_QAM_SYMB
+        random.seed(self.RAND_SEED)
+        self.rand_qam_seq = np.zeros(self.rand_qam_seq_len,dtype = np.complex64)
+
+        # gen rand qam seq
+        for i in range(self.rand_qam_seq_len):
+            rand_data = 0
+            if(self.ofdm_cfg.QAM_MODE == 4):
+                rand_data = random.randint(0,3)
+            elif(self.ofdm_cfg.QAM_MODE == 16):
+                rand_data = random.randint(0,15)
+            else:
+                print("illegal qam mode")
+            self.rand_qam_seq[i] = qam_mapping(self.ofdm_cfg.QAM_MAP,rand_data)
+
+        # len: N_OFDM * N_DATA_SC
+        self.rand_qam_seq_file = self.ofdm_cfg.TX_OUTPUT_QAM_NO_PILOT_FILE
+        df.save_array_to_file(self.rand_qam_seq_file,self.rand_qam_seq)
+        return
+    
+    def gen_tx_qam_seq(self):
+        self.tx_qam_seq_len = self.ofdm_cfg.N * self.ofdm_cfg.N_OFDM
+        self.tx_qam_seq = np.zeros(self.tx_qam_seq_len,dtype = np.complex64)
+            
+        for i in range(self.ofdm_cfg.N_OFDM):
+            tx_qam_seq_index = np.arange(start = i*self.ofdm_cfg.N,stop = (i+1)*self.ofdm_cfg.N)
+            data_qam_seq_index = np.arange(start = i*self.ofdm_cfg.N_DATA_SC, stop = (i+1) * self.ofdm_cfg.N_DATA_SC)
+
+            qam_per_ofdm_symb = np.zeros(self.ofdm_cfg.N,dtype = np.complex64)
+
+            #insert data
+            if(self.ofdm_cfg.OFDM_DATA_INDEX is not None):
+                qam_per_ofdm_symb[self.ofdm_cfg.OFDM_DATA_INDEX] = self.rand_qam_seq[data_qam_seq_index]
+            #insert guard
+            if(self.ofdm_cfg.OFDM_GUARD_INDEX is not None):
+                qam_per_ofdm_symb[self.ofdm_cfg.OFDM_GUARD_INDEX] = self.guard_seq
+            #inesrt pilot
+            if(self.ofdm_cfg.OFDM_PILOT_INDEX is not None):
+                qam_per_ofdm_symb[self.ofdm_cfg.OFDM_PILOT_INDEX] = self.pilot_seq
+
+            self.tx_qam_seq[tx_qam_seq_index] = qam_per_ofdm_symb
+
+        print("tx_qam_seq = ",self.tx_qam_seq)
+
+        self.tx_qam_seq_file = self.ofdm_cfg.TX_OUTPUT_QAM_PILOT_FILE
+        df.save_array_to_file(self.tx_qam_seq_file,self.tx_qam_seq)
+        
+    def ofdm_mod(self):
+        self.ofdm_symb_seq = ofdm_mod(self.tx_qam_seq,self.ofdm_cfg.N_OFDM,self.ofdm_cfg.N,self.ofdm_cfg.CP_LEN)
+
+    def frame_assemble(self):
+        self.tx_frame_seq_len = self.ofdm_cfg.FRAME_LEN * self.ofdm_cfg.N_FRAMES
+
+        #insert LLTF
+        self.single_frame_seq = self.ofdm_cfg.LLTF
+
+        #insert training_seq
+        print("train_symbx2 = ", self.ofdm_cfg.train_symbx2)
+        self.single_frame_seq = np.concatenate((self.single_frame_seq, self.ofdm_cfg.train_symbx2))
+
+        #insert ofdm symbs
+        self.single_frame_seq = np.concatenate((self.single_frame_seq,self.ofdm_symb_seq))
+
+        #print("single_frame_len = ",len(self.single_frame_seq))
+        #print("single_frame = ",self.single_frame_seq)
 
 
+        self.tx_single_frame_seq_file = self.ofdm_cfg.TX_OUTPUT_SINGLE_FRAME_FILE
+        df.save_array_to_file(self.tx_single_frame_seq_file,self.single_frame_seq)
+        self.tx_frame_seq = np.tile(self.single_frame_seq, self.ofdm_cfg.N_FRAMES)
+        self.tx_frame_seq_file = self.ofdm_cfg.TX_OUTPUT_FILE
+        df.save_array_to_file(self.tx_frame_seq_file, self.tx_frame_seq)
 
+    def plt_single_frame(self):
+        pf.plot_all("single frame in TX",self.single_frame_seq,self.ofdm_cfg.SAMPLE_RATE)
 
+    def plt_frames(self):
+        pf.plot_all("frames in TX",self.tx_frame_seq,self.ofdm_cfg.SAMPLE_RATE)
+
+    def tx_run(self):
+        if(self.ofdm_cfg.EXE_MODE == "DEMODE_RTL_OUTPUT"):
+            return
+        else:
+            self.gen_rand_qam_seq()
+            self.gen_tx_qam_seq()
+            self.ofdm_mod()
+            self.frame_assemble()
+            self.plt_single_frame()
+            self.plt_frames()
+            plt.show()
+            return
+'''
 def interpolate_complex_signal_with_lowpass(input_signal, upsample_factor, fs):
     """
     使用低通滤波器对复数信号进行插值的函数
@@ -148,15 +307,7 @@ def align_qam_symb(qam_sig):
     qam_mod_aligned[qam_sym_len:qam_sym_len+aligned_diff] = aligned_repeat
     return n_frames, qam_mod_aligned
 
-def add_cp(ofdm_symb,N,cp_len):
-    
-    #Extract CP
-    cp = ofdm_symb[N-cp_len:N:1]
-    
-    # Concatenate CP and symbol 
-    ofdm_symb_cp = np.concatenate((cp,ofdm_symb))
-    
-    return ofdm_symb_cp
+
 
 def ofdm_mod(qam_sym):
 
@@ -256,3 +407,5 @@ def Transmitter(ascii_file, output_file):
     pf.plot_all("OFDM MOD RES imag",trans_res.imag, 512e6)
     pf.plot_all("OFDM MOD RES real",trans_res.real, 512e6)
     return
+
+'''

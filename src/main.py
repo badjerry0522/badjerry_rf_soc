@@ -18,7 +18,7 @@ def test_LTF_symb():
     return
 '''
 
-'''
+
 import argparse
 
 def get_args():
@@ -51,9 +51,13 @@ if(ofdm_cfgs.init_ok != 1):
     sys.exit()
 
 ofdm_cfgs.display()
+
+tx0 = tx.tx(ofdm_cfgs)
+tx0.tx_run()
+
+
+
 '''
-
-
 #tx.Transmitter(consts.ascii_tx_file,consts.tx_output_sig_file)
 
 # write for rtl test
@@ -73,3 +77,4 @@ channel.AWGN_channel(consts.tx_output_sig_file,consts.channel_output_sig_file,co
 #rx.Receiver(consts.channel_output_sig_file,consts.rx_output_ascii_file)
 rx.Receiver(consts.test_res_complex,consts.rx_output_ascii_file)
 plt.show()
+'''

@@ -275,7 +275,7 @@ def Receiver(channel_output_file, rx_output_file):
 
 
     # test: 120000 - 160000
-    rx_din_sig = (rx_din_sig[0:8000])
+    rx_din_sig = (rx_din_sig[17500:21000])
     pf.plot_all("sig after downsample real",rx_din_sig.real,512e6)
     pf.plot_all("sig after downsample imag",rx_din_sig.imag,512e6)
     
@@ -446,14 +446,14 @@ def Receiver(channel_output_file, rx_output_file):
             j = j + consts.N_DATA
             k = k + consts.N + consts.CP_LEN 
 
-        ranging_mean = np.mean(ranging_all,0)
-        ranging_mean_dB = 10*np.log10(ranging_mean/max(ranging_mean))
-        print('对一帧求均值:',np.size(ranging_mean_dB))
-        plt.title([no_frame,'rangeEstimation'])
-        plt.plot(consts.range,ranging_mean_dB)
-        plt.ylabel('Ambiguity (dB)')
-        plt.xlabel('Distance (m)')
-        plt.show()
+        #ranging_mean = np.mean(ranging_all,0)
+        #ranging_mean_dB = 10*np.log10(ranging_mean/max(ranging_mean))
+        #print('对一帧求均值:',np.size(ranging_mean_dB))
+        #plt.title([no_frame,'rangeEstimation'])
+        #plt.plot(consts.range,ranging_mean_dB)
+        #plt.ylabel('Ambiguity (dB)')
+        #plt.xlabel('Distance (m)')
+        #plt.show()
         
 
         print("data_rx len = ",len(data_rx))
